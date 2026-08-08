@@ -1,0 +1,23 @@
+{
+  "format_on_save": "on",
+  "language_servers": ["!dprint", "..."],
+  "languages": {
+    "JavaScript": {
+      "language_servers": ["deno", "oxfmt"],
+      "formatter": [{ "language_server": { "name": "oxfmt" } }],
+    },
+    "JSON": {
+      "formatter": [{ "language_server": { "name": "oxfmt" } }],
+    },
+    "Markdown": {
+      "formatter": [{ "language_server": { "name": "oxfmt" } }],
+    },
+    "TypeScript": {
+      "language_servers": ["deno", "oxfmt"],
+      "formatter": [{ "language_server": { "name": "oxfmt" } }],
+    },
+    "YAML": {
+      "formatter": [{ "language_server": { "name": "oxfmt" } }],
+    },
+  },
+}

@@ -1,0 +1,13 @@
+proto = ">=0.58.2"
+deno = "2.9.5"
+node = ">=22.12.0"
+just = ">=1.46.0"
+dprint = ">=0.55.1"
+
+[settings]
+auto-install = true
+detect-strategy = "only-prototools"
+
+[plugins.tools]
+just = "https://raw.githubusercontent.com/Phault/proto-toml-plugins/9808cc412785ac59ec1b0d61bd1bee152f6f6b56/just/plugin.toml"
+dprint = "https://raw.githubusercontent.com/Phault/proto-toml-plugins/9808cc412785ac59ec1b0d61bd1bee152f6f6b56/dprint/plugin.toml"
