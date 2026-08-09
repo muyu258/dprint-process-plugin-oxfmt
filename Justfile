@@ -20,3 +20,14 @@ test: install
 
 e2e: build
     cargo test --test parity -- --ignored --nocapture
+
+check: install
+    deno task fmt:check
+    cargo fmt --all -- --check
+    deno lint runtime/src
+    deno check --frozen runtime/src/*.ts
+    deno task runtime:test
+    cargo test
+    cargo clippy --all-targets -- -D warnings
+
+ci: check e2e

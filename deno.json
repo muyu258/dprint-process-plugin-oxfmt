@@ -13,8 +13,8 @@
     "zod": "npm:zod@^4.4.3"
   },
   "tasks": {
-    "fmt": "deno run -A --frozen npm:oxfmt@0.59.0 src scripts --write",
-    "fmt:check": "deno run -A --frozen npm:oxfmt@0.59.0 src scripts --check",
+    "fmt": "deno run -A --frozen npm:oxfmt@0.59.0 runtime/src --write",
+    "fmt:check": "deno run -A --frozen npm:oxfmt@0.59.0 runtime/src --check",
     "runtime:build": "deno run -A --frozen npm:typescript@7.0.2/tsc --project runtime/tsconfig.json",
     "runtime:test": "deno run -A --frozen npm:typescript@7.0.2/tsc --project runtime/tsconfig.json --outDir runtime/dist-test && node --test runtime/dist-test/worker.test.js"
   },
