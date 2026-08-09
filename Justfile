@@ -17,3 +17,6 @@ fmt:
 test: install
     deno task runtime:test
     cargo test
+
+e2e: build
+    cargo test --test parity -- --ignored --nocapture
