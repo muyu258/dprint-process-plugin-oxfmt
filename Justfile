@@ -24,10 +24,13 @@ e2e: build
 check: install
     deno task fmt:check
     cargo fmt --all -- --check
-    deno lint runtime/src
-    deno check --frozen runtime/src/*.ts
+    deno lint
+    deno check --frozen scripts/release/*.ts runtime/src/*.ts
     deno task runtime:test
     cargo test
     cargo clippy --all-targets -- -D warnings
 
 ci: check e2e
+
+package:
+    deno run -A --frozen scripts/release/package.ts
