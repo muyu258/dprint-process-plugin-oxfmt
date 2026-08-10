@@ -25,7 +25,7 @@ check: install
     deno task fmt:check
     cargo fmt --all -- --check
     deno lint
-    deno check --frozen scripts/release/*.ts runtime/src/*.ts
+    deno check --frozen scripts/release/*.ts scripts/npm/*.ts runtime/src/*.ts
     deno task runtime:test
     cargo test
     cargo clippy --all-targets -- -D warnings
@@ -34,3 +34,9 @@ ci: check e2e
 
 package:
     deno run -A --frozen scripts/release/package.ts
+
+npm-package:
+    deno run -A --frozen scripts/npm/package.ts
+
+npm-publish:
+    deno run -A --frozen scripts/npm/publish.ts
