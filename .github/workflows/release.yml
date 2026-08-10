@@ -1,0 +1,122 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Package (${{ matrix.runner }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner:
+          - macos-15
+          - macos-15-intel
+          - ubuntu-24.04-arm
+          - ubuntu-24.04
+          - windows-2025
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up project toolchain
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+
+      - name: Set up ZIP on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: choco install zip --yes --no-progress
+
+      - name: Build platform input
+        id: package
+        shell: bash
+        run: just package
+
+      - name: Upload platform ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-input-${{ steps.package.outputs.platform }}
+          path: dist/npm-inputs/${{ steps.package.outputs.platform }}/${{ steps.package.outputs.zip_name }}
+          if-no-files-found: error
+
+  aggregate:
+    name: Aggregate npm release
+    needs: package
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up project toolchain
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+
+      - name: Use release npm version
+        run: npm install --global npm@11.16.0
+
+      - name: Download platform ZIPs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: npm-input-*
+          path: dist/downloads
+
+      - name: Restore dynamic platform input layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/npm-inputs
+          for artifact in dist/downloads/npm-input-*; do
+            platform=${artifact##*/npm-input-}
+            mkdir "dist/npm-inputs/$platform"
+            cp "$artifact"/*.zip "dist/npm-inputs/$platform/"
+          done
+
+      - name: Build complete npm release
+        run: just npm-package
+
+      - name: Upload exact npm release set
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-release
+          path: dist/npm/*.tgz
+          if-no-files-found: error
+
+  publish:
+    name: Publish npm release
+    needs: aggregate
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up project toolchain
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+
+      - name: Use release npm version
+        run: npm install --global npm@11.16.0
+
+      - name: Download exact npm release set
+        uses: actions/download-artifact@v4
+        with:
+          name: npm-release
+          path: dist/npm
+
+      - name: Preflight and publish platforms, then main package
+        run: just npm-publish
