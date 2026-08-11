@@ -68,7 +68,7 @@ dependencies = [
 
 [[package]]
 name = "dprint-process-plugin-oxfmt"
-version = "0.59.0"
+version = "0.63.0"
 dependencies = [
  "dprint-core",
  "serde",

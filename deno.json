@@ -8,13 +8,13 @@
     "@std/fs/move": "jsr:@std/fs@1.0.24/move",
     "@std/path": "jsr:@std/path@1.1.6",
     "@types/node": "npm:@types/node@20.19.0",
-    "oxfmt": "npm:oxfmt@0.59.0",
+    "oxfmt": "npm:oxfmt@0.63.0",
     "typescript": "npm:typescript@7.0.2",
     "zod": "npm:zod@^4.4.3"
   },
   "tasks": {
-    "fmt": "deno run -A --frozen npm:oxfmt@0.59.0 src scripts --write",
-    "fmt:check": "deno run -A --frozen npm:oxfmt@0.59.0 src scripts --check",
+    "fmt": "deno run -A --frozen npm:oxfmt@0.63.0 src scripts --write",
+    "fmt:check": "deno run -A --frozen npm:oxfmt@0.63.0 src scripts --check",
     "runtime:build": "deno run -A --frozen npm:typescript@7.0.2/tsc --project runtime/tsconfig.json",
     "runtime:test": "deno run -A --frozen npm:typescript@7.0.2/tsc --project runtime/tsconfig.json --outDir runtime/dist-test && node --test runtime/dist-test/worker.test.js"
   },

@@ -9,7 +9,7 @@ byte-for-byte single-file Oxfmt output.
 Install the plugin as a development dependency:
 
 ```sh
-npm install --save-dev dprint-process-plugin-oxfmt@0.59.0
+npm install --save-dev dprint-process-plugin-oxfmt@0.63.0
 ```
 
 Reference the package manifest in `dprint.json`:
@@ -32,7 +32,7 @@ optional platform package. dprint verifies the selected platform tarball against
 For an explicitly pinned main tarball, use:
 
 ```text
-npm:dprint-process-plugin-oxfmt@0.59.0/plugin.json@<main-package-tarball-sha256>
+npm:dprint-process-plugin-oxfmt@0.63.0/plugin.json@<main-package-tarball-sha256>
 ```
 
 ## Development

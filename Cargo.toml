@@ -1,6 +1,6 @@
 [package]
 name = "dprint-process-plugin-oxfmt"
-version = "0.59.0"
+version = "0.63.0"
 edition = "2024"
 license = "MIT"
 publish = false
