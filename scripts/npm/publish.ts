@@ -115,7 +115,7 @@ export async function publishRelease(
   for (const artifact of artifacts) {
     const args = [
       "publish",
-      ...(options.publishArgs ?? ["--access", "public", "--provenance"]),
+      ...(options.publishArgs ?? ["--access", "public", "--provenance", "--loglevel", "verbose"]),
       artifact.tarball,
     ];
     const result = await npm(args);
