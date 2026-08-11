@@ -2,9 +2,11 @@
 
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
-install:
-    cargo fetch
+deno-install:
     deno install --frozen
+
+install: deno-install
+    cargo fetch
 
 build:
     deno task runtime:build
@@ -32,11 +34,11 @@ check: install
 
 ci: check e2e
 
-package:
+package: deno-install
     deno run -A --frozen scripts/release/package.ts
 
-npm-package:
+npm-package: deno-install
     deno run -A --frozen scripts/npm/package.ts
 
-npm-publish:
+npm-publish: deno-install
     deno run -A --frozen scripts/npm/publish.ts
