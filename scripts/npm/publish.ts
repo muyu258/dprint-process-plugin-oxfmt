@@ -51,6 +51,11 @@ function isNotFound(result: CommandResult): boolean {
   return !result.success && /\bE404\b/.test(`${result.stdout}\n${result.stderr}`);
 }
 
+function commandFailureDetails(result: CommandResult): string {
+  const output = [result.stderr.trim(), result.stdout.trim()].filter(Boolean).join("\n");
+  return output.length === 0 ? "" : `\n${output}`;
+}
+
 export async function readNpmRelease(): Promise<NpmRelease> {
   const version = await assertReleaseVersions();
   const output = join(repositoryRoot, "dist/npm");
@@ -116,7 +121,7 @@ export async function publishRelease(
     const result = await npm(args);
     assert(
       result.success,
-      `npm publish failed for ${artifact.package} (${basename(artifact.tarball)})`,
+      `npm publish failed for ${artifact.package} (${basename(artifact.tarball)})${commandFailureDetails(result)}`,
     );
   }
 }
