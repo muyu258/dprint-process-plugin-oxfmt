@@ -1,6 +1,7 @@
 use dprint_core::async_runtime::LocalBoxFuture;
 use dprint_core::async_runtime::async_trait;
 use dprint_core::configuration::ConfigKeyMap;
+use dprint_core::configuration::ConfigKeyValue;
 use dprint_core::configuration::GlobalConfiguration;
 use dprint_core::plugins::AsyncPluginHandler;
 use dprint_core::plugins::FileMatchingInfo;
@@ -14,8 +15,55 @@ use dprint_core::plugins::PluginResolveConfigurationResult;
 use crate::worker::DiagnosticSeverity;
 use crate::worker::Worker;
 
-const JAVASCRIPT_AND_TYPESCRIPT_EXTENSIONS: &[&str] =
-    &["js", "jsx", "ts", "tsx", "mjs", "cjs", "mts", "cts"];
+const SUPPORTED_EXTENSIONS: &[&str] = &[
+    "js",
+    "jsx",
+    "ts",
+    "tsx",
+    "mjs",
+    "cjs",
+    "mts",
+    "cts",
+    "json",
+    "jsonc",
+    "json5",
+    "css",
+    "scss",
+    "less",
+    "pcss",
+    "postcss",
+    "wxss",
+    "graphql",
+    "gql",
+    "graphqls",
+    "toml",
+    "html",
+    "htm",
+    "xhtml",
+    "vue",
+    "mjml",
+    "handlebars",
+    "hbs",
+    "md",
+    "markdown",
+    "mdx",
+    "yaml",
+    "yml",
+];
+
+fn supported_extensions(config: &ConfigKeyMap) -> Vec<String> {
+    let mut extensions = SUPPORTED_EXTENSIONS
+        .iter()
+        .map(|extension| (*extension).to_owned())
+        .collect::<Vec<_>>();
+    if matches!(
+        config.get("svelte"),
+        Some(ConfigKeyValue::Bool(true) | ConfigKeyValue::Object(_))
+    ) {
+        extensions.push("svelte".to_owned());
+    }
+    extensions
+}
 
 pub struct OxfmtPluginHandler {
     worker: Worker,
@@ -57,10 +105,7 @@ impl AsyncPluginHandler for OxfmtPluginHandler {
     ) -> PluginResolveConfigurationResult<Self::Configuration> {
         PluginResolveConfigurationResult {
             file_matching: FileMatchingInfo {
-                file_extensions: JAVASCRIPT_AND_TYPESCRIPT_EXTENSIONS
-                    .iter()
-                    .map(|extension| (*extension).to_owned())
-                    .collect(),
+                file_extensions: supported_extensions(&config),
                 file_names: Vec::new(),
             },
             diagnostics: Vec::new(),

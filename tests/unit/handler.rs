@@ -103,9 +103,67 @@ fn resolves_the_original_configuration() {
     assert_eq!(result.config, config);
     assert_eq!(
         result.file_matching.file_extensions,
-        ["js", "jsx", "ts", "tsx", "mjs", "cjs", "mts", "cts"]
+        [
+            "js",
+            "jsx",
+            "ts",
+            "tsx",
+            "mjs",
+            "cjs",
+            "mts",
+            "cts",
+            "json",
+            "jsonc",
+            "json5",
+            "css",
+            "scss",
+            "less",
+            "pcss",
+            "postcss",
+            "wxss",
+            "graphql",
+            "gql",
+            "graphqls",
+            "toml",
+            "html",
+            "htm",
+            "xhtml",
+            "vue",
+            "mjml",
+            "handlebars",
+            "hbs",
+            "md",
+            "markdown",
+            "mdx",
+            "yaml",
+            "yml",
+        ]
     );
     assert!(result.diagnostics.is_empty());
+}
+
+#[test]
+fn includes_svelte_when_its_formatter_is_enabled() {
+    let handler = test_handler();
+    for svelte_config in [
+        ConfigKeyValue::Bool(true),
+        ConfigKeyValue::Object(ConfigKeyMap::new()),
+    ] {
+        let mut config = ConfigKeyMap::new();
+        config.insert("svelte".to_owned(), svelte_config);
+
+        let result = tokio::runtime::Builder::new_current_thread()
+            .build()
+            .expect("failed creating test runtime")
+            .block_on(handler.resolve_config(config, GlobalConfiguration::default()));
+
+        assert!(
+            result
+                .file_matching
+                .file_extensions
+                .contains(&"svelte".to_owned())
+        );
+    }
 }
 
 #[test]
